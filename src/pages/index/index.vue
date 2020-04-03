@@ -12,112 +12,39 @@
         indicator-color="rgba(255,255,255,1)"
         indicator-active-color="rgba(255,255,255,.6)"
       >
-        <swiper-item>
-          <navigator url>
-            <image src="/static/uploads/banner1.png" />
-          </navigator>
-        </swiper-item>
-        <swiper-item>
-          <navigator url>
-            <image src="/static/uploads/banner2.png" />
-          </navigator>
-        </swiper-item>
-        <swiper-item>
-          <navigator url>
-            <image src="/static/uploads/banner3.png" />
+        <swiper-item :key="item.goods_id" v-for="item in swiper">
+          <navigator :url="`/pages/goods/index?id=${item.goods_id}`">
+            <image :src="item.image_src" />
           </navigator>
         </swiper-item>
       </swiper>
     </view>
     <!-- 功能导航 -->
     <view class="navs">
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_1@2x.png" />
-      </navigator>
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_2@2x.png" />
-      </navigator>
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_3@2x.png" />
-      </navigator>
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_4@2x.png" />
+      <navigator
+        :url="'/pages/list/index?query='+item.name"
+        :key="index"
+        v-for="(item,index) in navs"
+      >
+        <image :src="item.image_src" />
       </navigator>
     </view>
     <!-- 栏目楼层 -->
     <view class="floors">
       <!-- 1 -->
-      <view class="floor">
+      <view class="floor" :key="item.name" v-for="item in floors">
         <!-- title -->
         <view class="ftitle">
-          <image src="/static/uploads/pic_floor01_title.png" />
+          <image :src="item.floor_title.image_src" />
         </view>
         <!-- pics -->
         <view class="fitem">
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_1@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_2@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_3@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_4@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_5@2x.png" />
-          </navigator>
-        </view>
-      </view>
-      <!-- 2 -->
-      <view class="floor">
-        <!-- title -->
-        <view class="ftitle">
-          <image src="/static/uploads/pic_floor02_title.png" />
-        </view>
-        <!-- pics -->
-        <view class="fitem">
-          <navigator url>
-            <image src="/static/uploads/pic_floor02_1@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor02_2@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor02_3@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor02_4@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor02_5@2x.png" />
-          </navigator>
-        </view>
-      </view>
-      <!-- 3 -->
-      <view class="floor">
-        <!-- title -->
-        <view class="ftitle">
-          <image src="/static/uploads/pic_floor03_title.png" />
-        </view>
-        <!-- pics -->
-        <view class="fitem">
-          <navigator url>
-            <image src="/static/uploads/pic_floor03_1@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor03_2@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor03_3@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor03_4@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor03_5@2x.png" />
+          <navigator
+            :url="'/pages/list/index?query=' +prd.name"
+            :key="prd.name"
+            v-for="prd in item.product_list"
+          >
+            <image :src="prd.image_src" />
           </navigator>
         </view>
       </view>
@@ -134,21 +61,61 @@
 <script>
 // 导入组件
 import search from "@/components/search";
+// import request from "@/utils/request";
 export default {
   data() {
     return {
-      pageHeight: "auto"
+      pageHeight: "auto",
+      swiper: [],
+      navs: [],
+      floors: []
     };
   },
   // 注册组件
   components: {
     search
   },
-  onLoad() {},
+  onLoad() {
+    this.getSwiper();
+    this.getNavs();
+    this.getFloors();
+  },
+  onPullDownRefresh() {
+    Promise.all([this.getSwiper(), this.getNavs(), this.getFloors()]).then(
+      () => {
+        // 执行完停止loading
+        uni.stopPullDownRefresh();
+      }
+    );
+  },
   methods: {
     // 搜索时禁止页面滚动
     disScroll(e) {
       this.pageHeight = e;
+    },
+    async getSwiper() {
+      const res = await this.request({
+        url: "/api/public/v1/home/swiperdata"
+      });
+      if (res.msg.status === 200) {
+        this.swiper = res.data;
+      }
+    },
+    async getNavs() {
+      const res = await this.request({
+        url: "/api/public/v1/home/catitems"
+      });
+      if (res.msg.status === 200) {
+        this.navs = res.data;
+      }
+    },
+    async getFloors() {
+      const res = await this.request({
+        url: "/api/public/v1/home/floordata"
+      });
+      if (res.msg.status === 200) {
+        this.floors = res.data;
+      }
     }
   }
 };

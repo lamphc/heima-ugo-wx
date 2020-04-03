@@ -69,6 +69,8 @@ export default {
 <style lang="scss">
 // 搜索
 .search {
+  display: flex;
+  flex-direction: column;
   .sinput {
     box-sizing: border-box;
     padding: 20rpx 16rpx;
@@ -133,11 +135,9 @@ export default {
   }
   .scontent {
     background: #fff;
-    position: absolute;
-    box-sizing: border-box;
-    top: 100rpx;
-    width: 100%;
-    bottom: 0;
+    position: relative;
+
+    flex: 1;
     padding: 27rpx;
     .title {
       font-size: 27rpx;
@@ -168,7 +168,7 @@ export default {
     }
 
     .result {
-      display: block;
+      display: none;
       position: absolute;
       left: 0;
       right: 0;
