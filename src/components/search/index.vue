@@ -1,0 +1,106 @@
+<template>
+  <view class="search" :class="{focused:isSearch}">
+    <view class="sinput">
+      <input @focus="search" type="text" placeholder="搜索" />
+      <button @click="cancel">取消</button>
+    </view>
+    <view class="scontent" v-show="isSearch">历史搜索</view>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isSearch: false
+    };
+  },
+  methods: {
+    search() {
+      this.isSearch = true;
+      const pageHeight = uni.getSystemInfoSync().windowHeight + "px";
+      uni.hideTabBar();
+      this.$emit("search", pageHeight);
+    },
+    cancel() {
+      this.isSearch = false;
+      uni.showTabBar();
+      this.$emit("search", "auto");
+    }
+  }
+};
+</script>
+
+<style lang="less">
+// 搜索
+.search {
+  .sinput {
+    padding: 20rpx 16rpx;
+    background: #ff2d4a;
+    position: relative;
+    //伪元素
+    &::after {
+      position: absolute;
+      top: 28rpx;
+      left: 302rpx;
+      content: "";
+      width: 44rpx;
+      height: 44rpx;
+      line-height: 1;
+      background-image: url(https://static.botue.com/ugo/images/icon_search%402x.png);
+      background-size: 32rpx;
+      background-position: 6rpx center;
+      background-repeat: no-repeat;
+    }
+    input {
+      background: #fff;
+      flex: 1;
+      height: 60rpx;
+      line-height: 60rpx;
+      text-align: center;
+      font-size: 24rpx;
+      color: #bbb;
+      border-radius: 5rpx;
+    }
+    button {
+      display: none;
+      margin-left: 20rpx;
+      width: 150rpx;
+      height: 60rpx;
+      line-height: 60rpx;
+      text-align: center;
+      font-size: 24rpx;
+      border-radius: 5rpx;
+      background: transparent;
+      color: #666;
+    }
+  }
+  &.focused {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    .sinput {
+      display: flex;
+      background: #eee;
+      input {
+        text-align: left;
+        padding-left: 60rpx;
+      }
+      button {
+        display: block;
+      }
+      &::after {
+        left: 30rpx;
+      }
+    }
+  }
+  .scontent {
+    background: #eee;
+    position: absolute;
+    top: 100rpx;
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>

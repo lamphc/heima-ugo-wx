@@ -1,9 +1,16 @@
 <template>
-  <div>category</div>
+  <view>
+    <search />
+  </view>
 </template>
 
 <script>
-export default {};
+import search from "@/components/search";
+export default {
+  components: {
+    search
+  }
+};
 </script>
 
 <style lang="less">

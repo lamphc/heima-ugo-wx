@@ -1,12 +1,7 @@
 <template>
-  <view class="index">
+  <view class="index" :style="{overflow:'hidden',height:pageHeight}">
     <!-- 搜索 -->
-    <view class="search">
-      <view class="input">
-        <input type="text" placeholder="搜索" />
-      </view>
-      <view class="scontent"></view>
-    </view>
+    <search @search="disScroll" />
     <!-- 轮播图 -->
     <view class="slider">
       <swiper
@@ -135,34 +130,30 @@
 </template>
 
 <script>
+// 导入组件
+import search from "@/components/search";
 export default {
   data() {
     return {
-      title: "Hello"
+      pageHeight: "auto"
     };
   },
+  // 注册组件
+  components: {
+    search
+  },
   onLoad() {},
-  methods: {}
+  methods: {
+    // 搜索时禁止页面滚动
+    disScroll(e) {
+      this.pageHeight = e;
+    }
+  }
 };
 </script>
 
 <style lang="less">
 .index {
-  // 搜索
-  .search {
-    .input {
-      padding: 20rpx 16rpx;
-      background: #ff2d4a;
-      input {
-        background: #fff;
-        height: 60rxp;
-        text-align: center;
-        font-size: 24rpx;
-        color: #bbb;
-        border-radius: 5rpx;
-      }
-    }
-  }
   // 轮播
   .slider {
     swiper,
