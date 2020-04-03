@@ -54,7 +54,7 @@
       <text>我是有底线的！</text>
     </view>
     <!-- 回到顶部 -->
-    <view class="goTop icon-top"></view>
+    <view class="goTop icon-top" @click="goTop" v-if="isShow"></view>
   </view>
 </template>
 
@@ -66,19 +66,29 @@ export default {
   data() {
     return {
       pageHeight: "auto",
+      scrollTop: 0,
       swiper: [],
       navs: [],
       floors: []
     };
+  },
+  computed: {
+    isShow() {
+      return this.scrollTop > this.wh;
+    }
   },
   // 注册组件
   components: {
     search
   },
   onLoad() {
+    this.wh = uni.getSystemInfoSync().windowHeight / 2;
     this.getSwiper();
     this.getNavs();
     this.getFloors();
+  },
+  onPageScroll(e) {
+    this.scrollTop = e.scrollTop;
   },
   onPullDownRefresh() {
     Promise.all([this.getSwiper(), this.getNavs(), this.getFloors()]).then(
@@ -89,6 +99,12 @@ export default {
     );
   },
   methods: {
+    goTop() {
+      uni.pageScrollTo({
+        scrollTop: 0,
+        duration: 300
+      });
+    },
     // 搜索时禁止页面滚动
     disScroll(e) {
       this.pageHeight = e;
