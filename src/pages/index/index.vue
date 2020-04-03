@@ -126,6 +126,8 @@
     <view class="end">
       <text>我是有底线的！</text>
     </view>
+    <!-- 回到顶部 -->
+    <view class="goTop icon-top"></view>
   </view>
 </template>
 
@@ -218,6 +220,24 @@ export default {
     text-align: center;
     font-size: 24rpx;
     color: #999;
+  }
+  .goTop {
+    position: fixed;
+    bottom: 30rpx;
+    /* #ifdef H5 */
+    bottom: 65px;
+    /* #endif */
+    right: 30rpx;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100rpx;
+    height: 100rpx;
+    font-size: 48rpx;
+    color: #666;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
   }
 }
 </style>

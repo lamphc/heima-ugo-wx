@@ -4,7 +4,42 @@
       <input @focus="search" type="text" placeholder="搜索" />
       <button @click="cancel">取消</button>
     </view>
-    <view class="scontent" v-show="isSearch">历史搜索</view>
+    <view class="scontent" v-show="isSearch">
+      <div class="title">
+        搜索历史
+        <span class="clear"></span>
+      </div>
+      <div class="history">
+        <navigator url="/pages/list/index">小米</navigator>
+        <navigator url="/pages/list/index">智能电视</navigator>
+        <navigator url="/pages/list/index">小米空气净化器</navigator>
+        <navigator url="/pages/list/index">西门子洗碗机</navigator>
+        <navigator url="/pages/list/index">华为手机</navigator>
+        <navigator url="/pages/list/index">苹果</navigator>
+        <navigator url="/pages/list/index">锤子</navigator>
+      </div>
+      <!-- 结果 -->
+      <scroll-view scroll-y class="result">
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index">小米</navigator>
+      </scroll-view>
+    </view>
   </view>
 </template>
 
@@ -35,6 +70,7 @@ export default {
 // 搜索
 .search {
   .sinput {
+    box-sizing: border-box;
     padding: 20rpx 16rpx;
     background: #ff2d4a;
     position: relative;
@@ -96,11 +132,61 @@ export default {
     }
   }
   .scontent {
-    background: #eee;
+    background: #fff;
     position: absolute;
+    box-sizing: border-box;
     top: 100rpx;
     width: 100%;
-    height: 100%;
+    bottom: 0;
+    padding: 27rpx;
+    .title {
+      font-size: 27rpx;
+      line-height: 1;
+      color: #333;
+    }
+    .clear {
+      display: block;
+      width: 27rpx;
+      height: 27rpx;
+      float: right;
+      background-image: url(http://static.botue.com/ugo/images/clear.png);
+      background-size: cover;
+    }
+
+    .history {
+      padding-top: 30rpx;
+      navigator {
+        display: inline-block;
+        line-height: 1;
+        padding: 15rpx 20rpx 12rpx;
+        background-color: #ddd;
+        font-size: 24rpx;
+        margin-right: 20rpx;
+        margin-bottom: 15rpx;
+        color: #333;
+      }
+    }
+
+    .result {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: #fff;
+      navigator {
+        line-height: 1;
+        padding: 20rpx 30rpx;
+        font-size: 24rpx;
+        color: #666;
+        border-bottom: 1px solid #eee;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
   }
 }
 </style>
