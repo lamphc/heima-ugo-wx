@@ -66,7 +66,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss">
 // 搜索
 .search {
   .sinput {

@@ -154,7 +154,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss">
 .index {
   // 轮播
   .slider {
