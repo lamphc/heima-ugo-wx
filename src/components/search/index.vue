@@ -1,43 +1,31 @@
 <template>
   <view class="search" :class="{focused:isSearch}">
     <view class="sinput">
-      <input @focus="search" type="text" placeholder="搜索" />
+      <input
+        @confirm="goResult"
+        @input="searchPrd"
+        @focus="search"
+        v-model="keyWord"
+        type="text"
+        placeholder="搜索"
+      />
       <button @click="cancel">取消</button>
     </view>
     <view class="scontent" v-show="isSearch">
       <div class="title">
         搜索历史
-        <span class="clear"></span>
+        <span @click="clearHistory" class="clear"></span>
       </div>
-      <div class="history">
-        <navigator url="/pages/list/index">小米</navigator>
-        <navigator url="/pages/list/index">智能电视</navigator>
-        <navigator url="/pages/list/index">小米空气净化器</navigator>
-        <navigator url="/pages/list/index">西门子洗碗机</navigator>
-        <navigator url="/pages/list/index">华为手机</navigator>
-        <navigator url="/pages/list/index">苹果</navigator>
-        <navigator url="/pages/list/index">锤子</navigator>
+      <div class="history" v-if="result.length===0">
+        <navigator :key="i" v-for="(item,i) in history" url="/pages/list/index">{{item}}</navigator>
       </div>
       <!-- 结果 -->
-      <scroll-view scroll-y class="result">
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
+      <scroll-view scroll-y class="result" v-else>
+        <navigator
+          :key="item.cat_id"
+          v-for="item in result"
+          url="/pages/goods/index"
+        >{{item.goods_name}}</navigator>
       </scroll-view>
     </view>
   </view>
@@ -47,10 +35,37 @@
 export default {
   data() {
     return {
-      isSearch: false
+      isSearch: false,
+      keyWord: "",
+      result: [],
+      history: uni.getStorageSync("history") || []
     };
   },
+  props: {
+    activeId: {
+      type: Number,
+      default: 0
+    }
+  },
   methods: {
+    clearHistory() {
+      this.history = [];
+      uni.clearStorage();
+    },
+    goResult() {
+      // 处理搜索历史
+      this.history.push(this.keyWord);
+      // 去重
+      this.history = [...new Set(this.history)];
+      uni.setStorage({
+        key: "history",
+        data: this.history
+      });
+      // 跳转结果页面
+      uni.navigateTo({
+        url: "/pages/list/index"
+      });
+    },
     search() {
       this.isSearch = true;
       const pageHeight = uni.getSystemInfoSync().windowHeight + "px";
@@ -61,6 +76,23 @@ export default {
       this.isSearch = false;
       uni.showTabBar();
       this.$emit("search", "auto");
+      // 清楚搜索状态
+      this.keyWord = "";
+      this.result = [];
+    },
+    // 获取搜索商品列表
+    async searchPrd() {
+      const { msg, data } = await this.request({
+        url: "/api/public/v1/goods/search",
+        data: {
+          query: this.keyWord
+          // cid: this.activeId
+        }
+      });
+      // console.log(data);
+      if (msg.status === 200) {
+        this.result = data.goods;
+      }
     }
   }
 };
@@ -168,7 +200,6 @@ export default {
     }
 
     .result {
-      display: none;
       position: absolute;
       left: 0;
       right: 0;

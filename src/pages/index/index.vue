@@ -22,7 +22,8 @@
     <!-- 功能导航 -->
     <view class="navs">
       <navigator
-        :url="'/pages/list/index?query='+item.name"
+        :open-type="item.open_type || 'navigate'"
+        :url="index===0? '/pages/category/index':'/pages/list/index?query=' + item.name"
         :key="index"
         v-for="(item,index) in navs"
       >
@@ -86,6 +87,9 @@ export default {
     this.getSwiper();
     this.getNavs();
     this.getFloors();
+  },
+  onReachBottom() {
+    console.log("bt...");
   },
   onPageScroll(e) {
     this.scrollTop = e.scrollTop;

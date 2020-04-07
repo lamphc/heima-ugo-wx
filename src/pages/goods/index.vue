@@ -1,21 +1,26 @@
 <template>
   <view class="wrapper">
     <!-- 商品图片 -->
-    <swiper class="pics" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
+    <swiper
+      class="pics"
+      indicator-dots
+      indicator-color="rgba(255, 255, 255, 0.6)"
+      indicator-active-color="#fff"
+    >
       <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_1.jpg"></image>
+        <image src="http://static.botue.com/ugo/uploads/detail_1.jpg" />
       </swiper-item>
       <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_2.jpg"></image>
+        <image src="http://static.botue.com/ugo/uploads/detail_2.jpg" />
       </swiper-item>
       <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_3.jpg"></image>
+        <image src="http://static.botue.com/ugo/uploads/detail_3.jpg" />
       </swiper-item>
       <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_4.jpg"></image>
+        <image src="http://static.botue.com/ugo/uploads/detail_4.jpg" />
       </swiper-item>
       <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_5.jpg"></image>
+        <image src="http://static.botue.com/ugo/uploads/detail_5.jpg" />
       </swiper-item>
     </swiper>
     <!-- 基本信息 -->
@@ -40,149 +45,150 @@
 </template>
 
 <script>
-  export default {
-
-    methods: {
-      goCart () {
-        uni.switchTab({
-          url: '/pages/cart/index'
-        })
-      },
-      createOrder () {
-        uni.navigateTo({
-          url: '/pages/order/index'
-        })
-      }
+export default {
+  methods: {
+    goCart() {
+      uni.switchTab({
+        url: "/pages/cart/index"
+      });
+    },
+    createOrder() {
+      uni.navigateTo({
+        url: "/pages/order/index"
+      });
     }
   }
+};
 </script>
 
 <style scoped lang="scss">
-  .wrapper {
-    margin-bottom: 100rpx;
-    background-color: #f4f4f4;
+.wrapper {
+  margin-bottom: 100rpx;
+  background-color: #f4f4f4;
+}
+
+.pics {
+  height: 640rpx;
+}
+
+.meta {
+  height: 250rpx;
+  line-height: 1;
+  padding: 30rpx 180rpx 30rpx 20rpx;
+  box-sizing: border-box;
+  background-color: #fff;
+  position: relative;
+
+  .price {
+    font-size: 36rpx;
+    color: #ea4451;
+    margin-bottom: 20rpx;
   }
 
-  .pics {
-    height: 640rpx;
+  .name {
+    color: #333;
+    line-height: 1.4;
+    font-size: 33rpx;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
   }
-  
-  .meta {
-    height: 250rpx;
-    line-height: 1;
-    padding: 30rpx 180rpx 30rpx 20rpx;
+
+  .shipment {
+    font-size: 27rpx;
+    color: #999;
+    position: absolute;
+    bottom: 30rpx;
+  }
+
+  .collect {
+    width: 140rpx;
+    height: 88rpx;
+    text-align: center;
     box-sizing: border-box;
-    background-color: #fff;
-    position: relative;
+    border-left: 1rpx solid #ddd;
+    font-size: 24rpx;
+    color: #999;
 
-    .price {
-      font-size: 36rpx;
-      color: #ea4451;
-      margin-bottom: 20rpx;
-    }
-
-    .name {
-      color: #333;
-      line-height: 1.4;
-      font-size: 33rpx;
-
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-    }
-
-    .shipment {
-      font-size: 27rpx;
-      color: #999;
-      position: absolute;
-      bottom: 30rpx;
-    }
-
-    .collect {
-      width: 140rpx;
-      height: 88rpx;
-      text-align: center;
-      box-sizing: border-box;
-      border-left: 1rpx solid #ddd;
-      font-size: 24rpx;
-      color: #999;
-
-      position: absolute;
-      right: 10rpx;
-      top: 91rpx;
-    }
-
-    [class*="icon-"]::before {
-      display: block;
-      font-size: 45rpx;
-      margin-bottom: 10rpx;
-    }
+    position: absolute;
+    right: 10rpx;
+    top: 91rpx;
   }
 
-  .detail image {
-    width: 100%;
-    height: 480rpx;
-    margin-top: 20rpx;
+  [class*="icon-"]::before {
+    display: block;
+    font-size: 45rpx;
+    margin-bottom: 10rpx;
+  }
+}
+
+.detail image {
+  width: 100%;
+  height: 480rpx;
+  margin-top: 20rpx;
+}
+
+.action {
+  width: 100%;
+  height: 98rpx;
+  background-color: #fff;
+
+  position: fixed;
+  left: 0;
+  bottom: 0;
+
+  display: flex;
+  align-items: center;
+
+  text {
+    display: block;
   }
 
-  .action {
-    width: 100%;
-    height: 98rpx;
-    background-color: #fff;
-
-    position: fixed;
-    left: 0;
-    bottom: 0;
-
+  .add,
+  .buy {
+    height: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
+    width: 210rpx;
+    text-align: center;
+    font-size: 27rpx;
+    color: #fff;
+  }
 
-    text {
-      display: block;
-    }
+  .add {
+    background-color: #f4b73f;
+  }
 
-    .add, .buy {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 210rpx;
-      text-align: center;
-      font-size: 27rpx;
-      color: #fff;
-    }
+  .buy {
+    background-color: #ea4451;
+  }
 
-    .add {
-      background-color: #f4b73f;
-    }
+  button {
+    padding: 0;
+    border-radius: 0;
+    background-color: #fff;
 
-    .buy {
-      background-color: #ea4451;
-    }
-
-    button {
-      padding: 0;
-      border-radius: 0;
-      background-color: #fff;
-
-      &::after {
-        border: none;
-      }
-    }
-
-    button, .cart {
-      flex: 1;
-      text-align: center;
-      color: #989898;
-      font-size: 24rpx;
-      box-sizing: border-box;
-    }
-
-    [class*="icon"]::before {
-      display: block;
-      font-size: 45rpx;
-      margin-bottom: 2rpx;
+    &::after {
+      border: none;
     }
   }
+
+  button,
+  .cart {
+    flex: 1;
+    text-align: center;
+    color: #989898;
+    font-size: 24rpx;
+    box-sizing: border-box;
+  }
+
+  [class*="icon"]::before {
+    display: block;
+    font-size: 45rpx;
+    margin-bottom: 2rpx;
+  }
+}
 </style>

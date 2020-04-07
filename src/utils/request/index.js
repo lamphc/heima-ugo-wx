@@ -3,10 +3,11 @@
  * @param {*} param 请求参数
  */
 // 基础地址
-const BASE_URL = "https://www.zhengzhicheng.cn"
+const BASE_URL = 'https://ugo.botue.com'
 export default async function request({ url, method, data }) {
   uni.showLoading({
-    title: '加载中...'
+    title: '加载中...',
+    mask: true
   });
   let [error, res] = await uni.request({
     url: BASE_URL + url,
