@@ -7,32 +7,21 @@
       indicator-color="rgba(255, 255, 255, 0.6)"
       indicator-active-color="#fff"
     >
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_1.jpg" />
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_2.jpg" />
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_3.jpg" />
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_4.jpg" />
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_5.jpg" />
+      <swiper-item :key="item.goods_id" v-for="item in goods.pics">
+        <image :src="item.pics_big" />
       </swiper-item>
     </swiper>
     <!-- 基本信息 -->
     <view class="meta">
-      <view class="price">￥199</view>
-      <view class="name">初语秋冬新款毛衣女 套头宽松针织衫简约插肩袖上衣</view>
+      <view class="price">￥{{goods.goods_price}}</view>
+      <view class="name">{{goods.goods_name}}</view>
       <view class="shipment">快递: 免运费</view>
       <text class="collect icon-star">收藏</text>
     </view>
     <!-- 商品详情 -->
     <view class="detail">
-      <rich-text></rich-text>
+      <!-- <view v-html="goods.goods_introduce"></view> -->
+      <rich-text :nodes="goods.goods_introduce"></rich-text>
     </view>
     <!-- 操作 -->
     <view class="action">
@@ -46,6 +35,14 @@
 
 <script>
 export default {
+  data() {
+    return {
+      goods: null
+    };
+  },
+  onLoad(params) {
+    this.getGoods(params.id);
+  },
   methods: {
     goCart() {
       uni.switchTab({
@@ -56,6 +53,16 @@ export default {
       uni.navigateTo({
         url: "/pages/order/index"
       });
+    },
+    async getGoods(goods_id) {
+      const { msg, data } = await this.request({
+        url: "/api/public/v1/goods/detail",
+        data: { goods_id }
+      });
+      console.log(msg, data);
+      if (msg.status === 200) {
+        this.goods = data;
+      }
     }
   }
 };
