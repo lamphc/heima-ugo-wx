@@ -26,8 +26,10 @@
     <!-- 操作 -->
     <view class="action">
       <button open-type="contact" class="icon-handset">联系客服</button>
+      <!-- 购物车数量 -->
+      <text class="cart-count" v-if="carts.length">{{carts.length}}</text>
       <text class="cart icon-cart" @click="goCart">购物车</text>
-      <text class="add">加入购物车</text>
+      <text @click="addCart" class="add">加入购物车</text>
       <text class="buy" @click="createOrder">立即购买</text>
     </view>
   </view>
@@ -37,13 +39,44 @@
 export default {
   data() {
     return {
-      goods: null
+      goods: null,
+      carts: uni.getStorageSync("carts") || []
     };
   },
   onLoad(params) {
     this.getGoods(params.id);
   },
   methods: {
+    addCart() {
+      // 判断是否添加过
+      let isAdd = this.carts.some(item => {
+        if (item.goods_id === this.goods.goods_id) {
+          // 有，只加数量
+          item.goods_count++;
+          return true;
+        }
+      });
+      if (!isAdd) {
+        const {
+          goods_id,
+          goods_name,
+          goods_price,
+          goods_small_logo
+        } = this.goods;
+        // 没有， 加入新的
+        this.carts.push({
+          goods_id,
+          goods_name,
+          goods_price,
+          goods_small_logo,
+          goods_count: 1,
+               goods_checked: true
+        });
+      }
+      // console.log(this.carts);
+      // 存储本地
+      uni.setStorageSync("carts", this.carts);
+    },
     goCart() {
       uni.switchTab({
         url: "/pages/cart/index"
@@ -151,6 +184,20 @@ export default {
 
   text {
     display: block;
+  }
+
+  .cart-count {
+    position: absolute;
+    width: 50rpx;
+    height: 50rpx;
+    font-size: 28rpx;
+    background: #fd1800;
+    color: #fff;
+    border-radius: 100%;
+    text-align: center;
+    line-height: 50rpx;
+    left: 260rpx;
+    top: -10rpx;
   }
 
   .add,

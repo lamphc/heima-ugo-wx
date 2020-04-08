@@ -80,18 +80,18 @@ export default {
       this.keyWord = "";
       this.result = [];
     },
-    // 获取搜索商品列表
+    // 获取搜索建议商品
     async searchPrd() {
       const { msg, data } = await this.request({
-        url: "/api/public/v1/goods/search",
+        url: "/api/public/v1/goods/qsearch",
         data: {
           query: this.keyWord
           // cid: this.activeId
         }
       });
-      // console.log(data);
+      console.log(data);
       if (msg.status === 200) {
-        this.result = data.goods;
+        this.result = data;
       }
     }
   }

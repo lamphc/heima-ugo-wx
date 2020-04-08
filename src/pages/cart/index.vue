@@ -15,92 +15,131 @@
       <view class="item">
         <!-- 店铺名称 -->
         <view class="shopname">优购生活馆</view>
-        <view class="goods">
+        <view class="goods" :key="item.goods_id" v-for="(item,index) in carts">
           <!-- 商品图片 -->
-          <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg" />
+          <image class="pic" :src="item.goods_small_logo" />
           <!-- 商品信息 -->
           <view class="meta">
-            <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
+            <view class="name">{{item.goods_name}}</view>
             <view class="price">
-              <text>￥</text>1399
+              <text>￥</text>
+              {{item.goods_price}}
               <text>.00</text>
             </view>
             <!-- 加减 -->
             <view class="amount">
-              <text class="reduce">-</text>
-              <input type="number" value="1" class="number" />
-              <text class="plus">+</text>
+              <text class="reduce" @click="changeCount(index, -1)">-</text>
+              <input
+                type="number"
+                @input="handlerCount($event,index)"
+                v-model="item.goods_count"
+                class="number"
+              />
+              <text class="plus" @click="changeCount(index, 1)">+</text>
             </view>
           </view>
           <!-- 选框 -->
           <view class="checkbox">
-            <icon type="success" size="20" color="#ea4451"></icon>
-          </view>
-        </view>
-        <view class="goods">
-          <!-- 商品图片 -->
-          <image class="pic" src="http://static.botue.com/ugo/uploads/goods_2.jpg" />
-          <!-- 商品信息 -->
-          <view class="meta">
-            <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-            <view class="price">
-              <text>￥</text>1399
-              <text>.00</text>
-            </view>
-            <!-- 加减 -->
-            <view class="amount">
-              <text class="reduce">-</text>
-              <input type="number" value="1" class="number" />
-              <text class="plus">+</text>
-            </view>
-          </view>
-          <!-- 选框 -->
-          <view class="checkbox">
-            <icon type="success" size="20" color="#ea4451"></icon>
-          </view>
-        </view>
-        <view class="goods">
-          <!-- 商品图片 -->
-          <image class="pic" src="http://static.botue.com/ugo/uploads/goods_5.jpg" />
-          <!-- 商品信息 -->
-          <view class="meta">
-            <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-            <view class="price">
-              <text>￥</text>1399
-              <text>.00</text>
-            </view>
-            <!-- 加减 -->
-            <view class="amount">
-              <text class="reduce">-</text>
-              <input type="number" value="1" class="number" />
-              <text class="plus">+</text>
-            </view>
-          </view>
-          <!-- 选框 -->
-          <view class="checkbox">
-            <icon type="success" size="20" color="#ccc"></icon>
+            <icon
+              @click="selPrd(index)"
+              type="success"
+              size="20"
+              :color="item.goods_checked?'#ea4451':'#ccc'"
+            ></icon>
           </view>
         </view>
       </view>
     </view>
     <!-- 其它 -->
     <view class="extra">
-      <label class="checkall">
-        <icon type="success" color="#ccc" size="20"></icon>全选
+      <label class="checkall" @click="selAll">
+        <icon type="success" :color="isAll?'#ea4451':'#ccc'" size="20"></icon>全选
       </label>
       <view class="total">
         合计:
         <text>￥</text>
-        <label>14110</label>
+        <label>{{amount}}</label>
         <text>.00</text>
       </view>
-      <view class="pay">结算(3)</view>
+      <view class="pay">结算({{checkedPrd.length}})</view>
     </view>
   </view>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      carts: []
+    };
+  },
+  computed: {
+    // 是否全部选中
+    isAll() {
+      return this.checkedPrd.length === this.carts.length;
+    },
+    // 当前选中的商品
+    checkedPrd() {
+      return this.carts.filter(item => item.goods_checked);
+    },
+    // 总金额
+    amount() {
+      let total = 0;
+      this.checkedPrd.forEach(item => {
+        total += item.goods_price * item.goods_count;
+      });
+      return total;
+    }
+  },
+  onLoad() {
+    this.getCarts();
+  },
+  methods: {
+    updateStorage() {
+      uni.setStorageSync("carts", this.carts);
+    },
+    handlerCount(e, i) {
+      console.log(e.detail.value)
+      let val = parseInt(e.detail.value);
+      console.log('h',val)
+      if (!val || isNaN(val) || val < 1) {
+        this.carts[i].goods_count = 1;
+      } else if (val > 10) {
+        this.carts[i].goods_count = 10;
+      }else {
+        this.carts[i].goods_count = val
+      }
+      // console.log(this.carts[i].goods_count, val);
+    },
+    selAll() {
+      if (this.isAll) {
+        this.carts.forEach(item => (item.goods_checked = false));
+      } else {
+        this.carts.forEach(item => (item.goods_checked = true));
+      }
+      this.updateStorage();
+    },
+    selPrd(index) {
+      this.carts[index].goods_checked = !this.carts[index].goods_checked;
+      this.updateStorage();
+    },
+    changeCount(index, step) {
+      // 处理边界
+      let count = this.carts[index].goods_count;
+      if (step === 1 && count >= 3) {
+        return;
+      } else if (step === -1 && count === 1) {
+        return;
+      }
+      this.carts[index].goods_count += step;
+      // console.log(this.carts[index].goods_count);
+      this.updateStorage();
+    },
+    getCarts() {
+      this.carts = uni.getStorageSync("carts") || [];
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
