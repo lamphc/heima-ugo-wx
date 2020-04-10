@@ -2,13 +2,17 @@
   <view class="wrapper">
     <!-- 收货信息 -->
     <view class="shipment">
-      <view class="dt">收货人:</view>
-      <view class="dd meta">
-        <text class="name">刘德华</text>
-        <text class="phone">13535337057</text>
-      </view>
-      <view class="dt">收货地址:</view>
-      <view class="dd">广东省广州市天河区一珠吉</view>
+      <block v-if="address">
+        <view class="dt">收货人:</view>
+        <view class="dd meta">
+          <text class="name">{{address.userName}}</text>
+          <text class="phone">{{address.telNumber}}</text>
+        </view>
+        <view class="dt">收货地址:</view>
+        <view class="dd">{{addr}}</view>
+      </block>
+      <!-- 获取用户地址 -->
+      <button v-else @click="getAddress">获取收获地址</button>
     </view>
     <!-- 购物车 -->
     <view class="carts">
@@ -70,10 +74,20 @@
 export default {
   data() {
     return {
-      carts: []
+      carts: [],
+      address: null
     };
   },
   computed: {
+    addr() {
+      return (
+        this.address &&
+        this.address.provinceName +
+          this.address.cityName +
+          this.address.countyName +
+          this.address.detailInfo
+      );
+    },
     // 是否全部选中
     isAll() {
       return this.checkedPrd.length === this.carts.length;
@@ -95,19 +109,27 @@ export default {
     this.getCarts();
   },
   methods: {
+    getAddress() {
+      uni.chooseAddress({
+        success: res => {
+          // console.log(res);
+          this.address = res;
+        }
+      });
+    },
     updateStorage() {
       uni.setStorageSync("carts", this.carts);
     },
     handlerCount(e, i) {
-      console.log(e.detail.value)
+      console.log(e.detail.value);
       let val = parseInt(e.detail.value);
-      console.log('h',val)
+      console.log("h", val);
       if (!val || isNaN(val) || val < 1) {
         this.carts[i].goods_count = 1;
       } else if (val > 10) {
         this.carts[i].goods_count = 10;
-      }else {
-        this.carts[i].goods_count = val
+      } else {
+        this.carts[i].goods_count = val;
       }
       // console.log(this.carts[i].goods_count, val);
     },

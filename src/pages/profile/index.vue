@@ -3,8 +3,10 @@
     <!-- 个人资料 -->
     <view class="profile">
       <view class="meta">
-        <image class="avatar" src="http://static.botue.com/ugo/uploads/monkey.png" />
-        <text class="nickname">孙悟空</text>
+        <!-- <image class="avatar" src="http://static.botue.com/ugo/uploads/monkey.png" />
+        <text class="nickname">孙悟空</text>-->
+        <open-data class="avatar" type="userAvatarUrl" />
+        <open-data class="nickname" type="userNickName" />
       </view>
     </view>
     <!-- 统计 -->
@@ -40,14 +42,35 @@
     <view class="address icon-arrow">收货地址</view>
     <!-- 其它 -->
     <view class="extra">
-      <view class="item icon-arrow">联系客服</view>
-      <button class="item icon-arrow">意见反馈</button>
+      <view @click="callSer" class="item icon-arrow">联系客服</view>
+      <button open-type="feedback" class="item icon-arrow">意见反馈</button>
+      <button open-type="share" class="item icon-arrow">分享</button>
     </view>
   </view>
 </template>
 
 <script>
-export default {};
+export default {
+  onLoad() {
+    // uni.showShareMenu();
+  },
+  onShareAppMessage(res) {
+    console.log(res);
+    return {
+      title: "自定义转发标题",
+      imageUrl:
+        "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=473008570,3269591064&fm=26&gp=0.jpg",
+      path: "/pages/index/index?id=123"
+    };
+  },
+  methods: {
+    callSer() {
+      uni.makePhoneCall({
+        phoneNumber: "10086"
+      });
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -69,9 +92,11 @@ export default {};
 
   .meta {
     .avatar {
+      display: inline-block;
       width: 140rpx;
       height: 140rpx;
       border-radius: 50%;
+      overflow: hidden;
       border: 2rpx solid #fff;
     }
 
