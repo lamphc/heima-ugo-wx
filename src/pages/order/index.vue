@@ -9,84 +9,31 @@
     </view>
     <!-- 订单 -->
     <scroll-view class="orders" scroll-y>
-      <view class="item">
+      <view v-for="order in orders" :key="order.order_id" class="item">
         <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg" />
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-          <view class="price">
-            <text>￥</text>1399
-            <text>.00</text>
+        <block v-for="good in order.goods" :key="good.goods_id">
+          <image class="pic" :src="good.goods_small_logo" />
+          <!-- 商品信息 -->
+          <view class="meta">
+            <view class="name">{{good.goods_name}}</view>
+            <view class="price">
+              <text>￥</text>
+              {{good.goods_price}}
+              <text>.00</text>
+            </view>
+            <view class="num">x{{good.goods_number}}</view>
           </view>
-          <view class="num">x1</view>
-        </view>
+        </block>
         <!-- 总价 -->
-        <view class="amount">共1件商品 总计: ￥4099(含运费0.00)</view>
+        <view class="amount">共{{order.total_count}}件商品 总计: ￥{{order.total_price}}(含运费0.00)</view>
         <!-- 其它 -->
         <view class="extra">
-          订单号: GD20180511000000000178
-          <button size="mini" type="primary">支付</button>
-        </view>
-      </view>
-      <view class="item">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg" />
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-          <view class="price">
-            <text>￥</text>1399
-            <text>.00</text>
-          </view>
-          <view class="num">x1</view>
-        </view>
-        <!-- 总价 -->
-        <view class="amount">共1件商品 总计: ￥4099(含运费0.00)</view>
-        <!-- 其它 -->
-        <view class="extra">
-          订单号: GD20180511000000000178
-          <button size="mini" type="primary">支付</button>
-        </view>
-      </view>
-      <view class="item">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg" />
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-          <view class="price">
-            <text>￥</text>1399
-            <text>.00</text>
-          </view>
-          <view class="num">x1</view>
-        </view>
-        <!-- 总价 -->
-        <view class="amount">共1件商品 总计: ￥4099(含运费0.00)</view>
-        <!-- 其它 -->
-        <view class="extra">
-          订单号: GD20180511000000000178
-          <button size="mini" type="primary">支付</button>
-        </view>
-      </view>
-      <view class="item">
-        <!-- 商品图片 -->
-        <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg" />
-        <!-- 商品信息 -->
-        <view class="meta">
-          <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-          <view class="price">
-            <text>￥</text>1399
-            <text>.00</text>
-          </view>
-          <view class="num">x1</view>
-        </view>
-        <!-- 总价 -->
-        <view class="amount">共1件商品 总计: ￥4099(含运费0.00)</view>
-        <!-- 其它 -->
-        <view class="extra">
-          订单号: GD20180511000000000178
-          <button size="mini" type="primary">支付</button>
+          订单号: {{order.order_number}}
+          <button
+            @click="pay(order.order_number)"
+            size="mini"
+            type="primary"
+          >支付</button>
         </view>
       </view>
     </scroll-view>
@@ -94,7 +41,61 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      orders: []
+    };
+  },
+  methods: {
+    async getOrders() {
+      // 判断是否登录
+      if (!uni.getStorageSync("token")) {
+        return uni.navigateTo({ url: "/pages/auth/index" });
+      }
+      // 获取订单列表
+      let { msg, data } = await this.request({
+        url: "/api/public/v1/my/orders/all",
+        header: {
+          Authorization: uni.getStorageSync("token")
+        },
+        data: {
+          type: 1
+        }
+      });
+      if (msg.status === 200) {
+        this.orders = data.orders;
+      }
+    },
+    // 支付
+    async pay(order_number) {
+      //  发送支付请求
+      let { msg, data } = await this.request({
+        url: "/api/public/v1/my/orders/req_unifiedorder",
+        header: {
+          Authorization: uni.getStorageSync("token")
+        },
+        method: "post",
+        data: {
+          order_number
+        }
+      });
+      if (msg.status === 200) {
+        // 调起微信支付窗口
+        let [err, msg] = await uni.requestPayment(data.pay);
+        if (!err) {
+          uni.showToast({
+            title: "支付成功！",
+            duration: 2000
+          });
+        }
+      }
+    }
+  },
+  onLoad() {
+    this.getOrders();
+  }
+};
 </script>
 
 <style scoped lang="scss">

@@ -65,7 +65,7 @@
         <label>{{amount}}</label>
         <text>.00</text>
       </view>
-      <view class="pay">结算({{checkedPrd.length}})</view>
+      <view @click="createOrder" class="pay">结算({{checkedPrd.length}})</view>
     </view>
   </view>
 </template>
@@ -77,6 +77,9 @@ export default {
       carts: [],
       address: null
     };
+  },
+  onShow() {
+    this.getCarts();
   },
   computed: {
     addr() {
@@ -90,7 +93,9 @@ export default {
     },
     // 是否全部选中
     isAll() {
-      return this.checkedPrd.length === this.carts.length;
+      return (
+        this.checkedPrd.length === this.carts.length && this.carts.length !== 0
+      );
     },
     // 当前选中的商品
     checkedPrd() {
@@ -105,10 +110,56 @@ export default {
       return total;
     }
   },
-  onLoad() {
-    this.getCarts();
-  },
+  // onLoad() {
+  //   this.getCarts();
+  // },
   methods: {
+    // 创建订单
+    async createOrder() {
+      // 有货地址和选中至少一件商品
+      if (!this.address || !this.checkedPrd.length) {
+        return uni.showToast({
+          title: "请填写收货地址和添加商品！",
+          icon: "none"
+        });
+      }
+      // 是否登录
+      if (!uni.getStorageSync("token")) {
+        return uni.navigateTo({
+          url: "/pages/auth/index"
+        });
+      }
+
+      // 调用接口：创建订单
+      let { data, msg } = await this.request({
+        url: "/api/public/v1/my/orders/create",
+        method: "post",
+        header: {
+          Authorization: uni.getStorageSync("token")
+        },
+        data: {
+          order_price: this.amount,
+          consignee_addr: this.addr,
+          goods: this.checkedPrd.map(item => {
+            item.goods_number = item.goods_count;
+            return item;
+          })
+        }
+      });
+      if (msg.status === 200) {
+        // 清空购物车
+        uni.removeStorage({
+          key: "carts"
+        });
+        // 跳转订单页面
+        uni.navigateTo({ url: "/pages/order/index" });
+      } else {
+        uni.showToast({
+          icon: "none",
+          title: msg.msg
+        });
+      }
+    },
     getAddress() {
       uni.chooseAddress({
         success: res => {
