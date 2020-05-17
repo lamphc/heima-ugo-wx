@@ -27,6 +27,9 @@
     },
     {
       "path": "pages/auth/index"
+    },
+    {
+      "path": "pages/map/index"
     }
   ],
   "globalStyle": {
