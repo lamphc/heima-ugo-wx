@@ -81,5 +81,8 @@
   },
   "mp-qq": {
     "usingComponents": true
+  },
+  "h5": {
+    "publicPath": "./"
   }
 }
