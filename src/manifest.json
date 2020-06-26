@@ -85,4 +85,5 @@
   "h5": {
     "publicPath": "./"
   }
+  // mainfest.json中设置h5节点的publicPath为:'./'打包后即为相对路径 但是你会发现一个问题就是有tabbar的情况下你的图标找不到 这是你需要手动改打包后的index.xxxxx.js文件 把这个e.uniConfig.router={mode:"hash",base:"/"}改成e.uniConfig.router={mode:"hash",base:"./"}
 }
