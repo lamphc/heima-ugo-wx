@@ -65,13 +65,13 @@
       ]
     }
   ],
-  // // 分包预先加载配置
-  // "preloadRule": {
-  //   "packone/list/index": {
-  //     "network": "all",
-  //     "packages": ["packone"]
-  //   }
-  // },
+  // 分包预先加载配置
+  "preloadRule": {
+    "packone/list/index": {
+      "network": "all",
+      "packages": ["packmap"]
+    }
+  },
   "globalStyle": {
     "navigationBarBackgroundColor": "#ea4451",
     "navigationBarTitleText": "黑马优购"
