@@ -126,7 +126,7 @@ export default {
       // 是否登录
       if (!uni.getStorageSync("token")) {
         return uni.navigateTo({
-          url: "/pages/auth/index"
+          url: "/packone/auth/index"
         })
       }
 
@@ -152,7 +152,7 @@ export default {
           key: "carts"
         })
         // 跳转订单页面
-        uni.navigateTo({ url: "/pages/order/index" })
+        uni.navigateTo({ url: "/packone/order/index" })
       } else {
         uni.showToast({
           icon: "none",
