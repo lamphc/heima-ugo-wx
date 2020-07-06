@@ -15,23 +15,63 @@
     },
     {
       "path": "pages/profile/index"
+    }
+    // {
+    //   "path": "pages/goods/index"
+    // },
+    // {
+    //   "path": "pages/list/index"
+    // },
+    // {
+    //   "path": "pages/order/index"
+    // },
+    // {
+    //   "path": "pages/auth/index"
+    // }
+    // {
+    //   "path": "pages/map/index"
+    // }
+  ],
+  // 分包
+  "subPackages": [
+    {
+      // 子包的根目录
+      "root": "packone",
+      // 子包由哪些页面组成
+      "pages": [
+        {
+          "path": "goods/index",
+          "style": {
+            "navigationBarTitleText": "详情"
+          }
+        },
+        {
+          "path": "list/index"
+        },
+        {
+          "path": "order/index"
+        },
+        {
+          "path": "auth/index"
+        }
+      ]
     },
     {
-      "path": "pages/goods/index"
-    },
-    {
-      "path": "pages/list/index"
-    },
-    {
-      "path": "pages/order/index"
-    },
-    {
-      "path": "pages/auth/index"
-    },
-    {
-      "path": "pages/map/index"
+      "root": "packmap",
+      "pages": [
+        {
+          "path": "map/index"
+        }
+      ]
     }
   ],
+  // // 分包预先加载配置
+  // "preloadRule": {
+  //   "packone/list/index": {
+  //     "network": "all",
+  //     "packages": ["packone"]
+  //   }
+  // },
   "globalStyle": {
     "navigationBarBackgroundColor": "#ea4451",
     "navigationBarTitleText": "黑马优购"

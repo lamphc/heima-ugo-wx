@@ -17,14 +17,14 @@
         <span @click="clearHistory" class="clear"></span>
       </div>
       <div class="history" v-if="result.length===0">
-        <navigator :key="i" v-for="(item,i) in history" url="/pages/list/index">{{item}}</navigator>
+        <navigator :key="i" v-for="(item,i) in history" url="/packone/list/index">{{item}}</navigator>
       </div>
       <!-- 结果 -->
       <scroll-view scroll-y class="result" v-else>
         <navigator
           :key="item.cat_id"
           v-for="item in result"
-          url="/pages/goods/index"
+          url="/packone/list/index"
         >{{item.goods_name}}</navigator>
       </scroll-view>
     </view>
@@ -33,13 +33,13 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       isSearch: false,
       keyWord: "",
       result: [],
       history: uni.getStorageSync("history") || []
-    };
+    }
   },
   props: {
     activeId: {
@@ -48,50 +48,50 @@ export default {
     }
   },
   methods: {
-    clearHistory() {
-      this.history = [];
-      uni.clearStorage();
+    clearHistory () {
+      this.history = []
+      uni.clearStorage()
     },
-    goResult() {
+    goResult () {
       // 处理搜索历史
-      this.history.push(this.keyWord);
+      this.history.push(this.keyWord)
       // 去重
-      this.history = [...new Set(this.history)];
+      this.history = [...new Set(this.history)]
       uni.setStorage({
         key: "history",
         data: this.history
-      });
+      })
       // 跳转结果页面
       uni.navigateTo({
-        url: "/pages/list/index"
-      });
+        url: "/packone/list/index"
+      })
     },
-    search() {
-      this.isSearch = true;
-      const pageHeight = uni.getSystemInfoSync().windowHeight + "px";
-      uni.hideTabBar();
-      this.$emit("search", pageHeight);
+    search () {
+      this.isSearch = true
+      const pageHeight = uni.getSystemInfoSync().windowHeight + "px"
+      uni.hideTabBar()
+      this.$emit("search", pageHeight)
     },
-    cancel() {
-      this.isSearch = false;
-      uni.showTabBar();
-      this.$emit("search", "auto");
+    cancel () {
+      this.isSearch = false
+      uni.showTabBar()
+      this.$emit("search", "auto")
       // 清楚搜索状态
-      this.keyWord = "";
-      this.result = [];
+      this.keyWord = ""
+      this.result = []
     },
     // 获取搜索建议商品
-    async searchPrd() {
+    async searchPrd () {
       const { msg, data } = await this.request({
         url: "/api/public/v1/goods/qsearch",
         data: {
           query: this.keyWord
           // cid: this.activeId
         }
-      });
-      console.log(data);
+      })
+      console.log(data)
       if (msg.status === 200) {
-        this.result = data;
+        this.result = data
       }
     }
   }

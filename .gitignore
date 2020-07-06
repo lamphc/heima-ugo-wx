@@ -2,6 +2,7 @@
 node_modules/
 unpackage/
 dist/dev
+dist/build/mp-weixin
 
 # local env files
 .env.local

@@ -13,7 +13,7 @@
         indicator-active-color="rgba(255,255,255,.6)"
       >
         <swiper-item :key="item.goods_id" v-for="item in swiper">
-          <navigator :url="`/pages/goods/index?id=${item.goods_id}`">
+          <navigator :url="`/packone/goods/index?id=${item.goods_id}`">
             <image :src="item.image_src" />
           </navigator>
         </swiper-item>
@@ -23,7 +23,7 @@
     <view class="navs">
       <navigator
         :open-type="item.open_type || 'navigate'"
-        :url="index===0? '/pages/category/index':'/pages/list/index?query=' + item.name"
+        :url="index===0? '/pages/category/index':'/packone/list/index?query=' + item.name"
         :key="index"
         v-for="(item,index) in navs"
       >
@@ -41,7 +41,7 @@
         <!-- pics -->
         <view class="fitem">
           <navigator
-            :url="'/pages/list/index?query=' +prd.name"
+            :url="'/packone/list/index?query=' +prd.name"
             :key="prd.name"
             v-for="prd in item.product_list"
           >
@@ -52,7 +52,7 @@
     </view>
     <!-- 底部提示 -->
     <view class="end">
-      <text>我是有底线的！</text>
+      <text @click="goMap">我是有底线的！</text>
     </view>
     <!-- 回到顶部 -->
     <view class="goTop icon-top" @click="goTop" v-if="isShow"></view>
@@ -61,80 +61,85 @@
 
 <script>
 // 导入组件
-import search from "@/components/search";
+import search from "@/components/search"
 // import request from "@/utils/request";
 export default {
-  data() {
+  data () {
     return {
       pageHeight: "auto",
       scrollTop: 0,
       swiper: [],
       navs: [],
       floors: []
-    };
+    }
   },
   computed: {
-    isShow() {
-      return this.scrollTop > this.wh;
+    isShow () {
+      return this.scrollTop > this.wh
     }
   },
   // 注册组件
   components: {
     search
   },
-  onLoad() {
-    this.wh = uni.getSystemInfoSync().windowHeight / 2;
-    this.getSwiper();
-    this.getNavs();
-    this.getFloors();
+  onLoad () {
+    this.wh = uni.getSystemInfoSync().windowHeight / 2
+    this.getSwiper()
+    this.getNavs()
+    this.getFloors()
   },
-  onReachBottom() {
-    console.log("bt...");
+  onReachBottom () {
+    console.log("bt...")
   },
-  onPageScroll(e) {
-    this.scrollTop = e.scrollTop;
+  onPageScroll (e) {
+    this.scrollTop = e.scrollTop
   },
-  onPullDownRefresh() {
+  onPullDownRefresh () {
     Promise.all([this.getSwiper(), this.getNavs(), this.getFloors()]).then(
       () => {
         // 执行完停止loading
-        uni.stopPullDownRefresh();
+        uni.stopPullDownRefresh()
       }
-    );
+    )
   },
   methods: {
-    goTop() {
+    goMap () {
+      uni.navigateTo({
+        url: "/packmap/map/index"
+      })
+    },
+    goTop () {
       uni.pageScrollTo({
         scrollTop: 0,
         duration: 300
-      });
+      })
     },
     // 搜索时禁止页面滚动
-    disScroll(e) {
-      this.pageHeight = e;
+    disScroll (e) {
+      this.pageHeight = e
     },
-    async getSwiper() {
+    async getSwiper () {
       const res = await this.request({
         url: "/api/public/v1/home/swiperdata"
-      });
+      })
       if (res.msg.status === 200) {
-        this.swiper = res.data;
+        this.swiper = res.data
       }
     },
-    async getNavs() {
+    async getNavs () {
       const res = await this.request({
         url: "/api/public/v1/home/catitems"
-      });
+      })
       if (res.msg.status === 200) {
-        this.navs = res.data;
+        this.navs = res.data
       }
     },
-    async getFloors() {
+    async getFloors () {
       const res = await this.request({
         url: "/api/public/v1/home/floordata"
-      });
+      })
       if (res.msg.status === 200) {
-        this.floors = res.data;
+        this.floors = res.data
       }
     }
   }

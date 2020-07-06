@@ -4,39 +4,39 @@
     <button type="primary" @tap="openPos">打开位置</button>
     <button type="primary" @tap="selPos">选择位置</button>
 
-    <web-view src="https://itcast.cn" />
+    <!-- <web-view src="https://itcast.cn" /> -->
   </view>
 </template>
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       longitude: "",
       latitude: ""
-    };
+    }
   },
-  onLoad() {
-    this.getPos();
+  onLoad () {
+    this.getPos()
   },
   methods: {
-    async getPos() {
+    async getPos () {
       let [err, data] = await uni.getLocation({
         type: "wgs84"
-      });
+      })
       if (!err) {
-        this.longitude = data.longitude;
-        this.latitude = data.latitude;
+        this.longitude = data.longitude
+        this.latitude = data.latitude
       }
     },
-    openPos() {
+    openPos () {
       uni.openLocation({
         longitude: this.longitude,
         latitude: this.latitude
-      });
+      })
     },
-    selPos() {
-      uni.chooseLocation();
+    selPos () {
+      uni.chooseLocation()
     }
   }
 };

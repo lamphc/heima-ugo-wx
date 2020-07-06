@@ -28,43 +28,43 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       list: [],
       nomore: false
-    };
+    }
   },
-  onLoad(params) {
-    this.query = params;
-    this.query.total = 0;
-    this.query.pagenum = 1;
-    this.query.pagesize = 5;
-    this.getList(this.query);
+  onLoad (params) {
+    this.query = params
+    this.query.total = 0
+    this.query.pagenum = 1
+    this.query.pagesize = 5
+    this.getList(this.query)
   },
-  onReachBottom() {
-    console.log("到底了...");
+  onReachBottom () {
+    console.log("到底了...")
   },
   methods: {
-    goDetail(id) {
+    goDetail (id) {
       uni.navigateTo({
-        url: "/pages/goods/index?id=" + id
-      });
+        url: "/packone/list/index?id=" + id
+      })
     },
-    getMore() {
-      if (this.nomore) return;
-      if (this.total === this.list.length) return (this.nomore = true);
-      this.query.pagenum++;
-      console.log(this.query.pagenum);
-      this.getList(this.query);
+    getMore () {
+      if (this.nomore) return
+      if (this.total === this.list.length) return (this.nomore = true)
+      this.query.pagenum++
+      console.log(this.query.pagenum)
+      this.getList(this.query)
     },
-    async getList(data) {
+    async getList (data) {
       const { msg, data: _d } = await this.request({
         url: "/api/public/v1/goods/search",
         data
-      });
-      !this.total && (this.total = _d.total);
+      })
+      !this.total && (this.total = _d.total)
       if (msg.status === 200) {
-        this.list = this.list.concat(_d.goods);
+        this.list = this.list.concat(_d.goods)
       }
     }
   }

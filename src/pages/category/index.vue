@@ -25,7 +25,7 @@
             <!-- 品牌 -->
             <view class="brands">
               <navigator
-                :url="'/pages/list/index?query='+it.cat_name"
+                :url="'/packone/list/index?query='+it.cat_name"
                 :key="it.cat_id"
                 v-for="it in item.children"
               >
@@ -41,41 +41,41 @@
 </template>
 
 <script>
-import search from "@/components/search";
+import search from "@/components/search"
 
 export default {
-  data() {
+  data () {
     return {
       cates: [],
       active: 0,
       activeId: 0
-    };
+    }
   },
   computed: {
-    sub() {
-      return this.cates.length && this.cates[this.active].children;
+    sub () {
+      return this.cates.length && this.cates[this.active].children
     }
   },
   methods: {
-    switchCate(index) {
-      this.active = index;
-      this.activeId = this.cates[index].cat_id;
-      console.log(this.activeId);
+    switchCate (index) {
+      this.active = index
+      this.activeId = this.cates[index].cat_id
+      console.log(this.activeId)
     },
-    async getCate() {
+    async getCate () {
       const { msg, data } = await this.request({
         url: "/api/public/v1/categories"
-      });
-      console.log(msg, data);
+      })
+      console.log(msg, data)
       if (msg.status === 200) {
-        this.cates = data;
+        this.cates = data
         // 处理默认选中ID
-        this.activeId = data[0].cat_id;
+        this.activeId = data[0].cat_id
       }
     }
   },
-  onLoad() {
-    this.getCate();
+  onLoad () {
+    this.getCate()
   },
   components: {
     search
