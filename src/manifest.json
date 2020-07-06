@@ -1,6 +1,6 @@
 {
   "name": "heima-ugo",
-  "appid": "wx38d8faffac4d34d2",
+  "appid": "",
   "description": "小程序电商!",
   "versionName": "1.0.0",
   "versionCode": "100",
@@ -64,7 +64,7 @@
   },
   "mp-weixin": {
     /* 微信小程序特有相关 */
-    "appid": "",
+    "appid": "wx38d8faffac4d34d2",
     "setting": {
       "urlCheck": false
     },

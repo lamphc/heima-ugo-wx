@@ -51,23 +51,23 @@
 
 <script>
 export default {
-  onLoad() {
-    // uni.showShareMenu();
+  onLoad () {
+    uni.showShareMenu()
   },
-  onShareAppMessage(res) {
-    console.log(res);
+  onShareAppMessage (res) {
+    console.log(res, this)
     return {
       title: "自定义转发标题",
       imageUrl:
         "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=473008570,3269591064&fm=26&gp=0.jpg",
       path: "/pages/index/index?id=123"
-    };
+    }
   },
   methods: {
-    callSer() {
+    callSer () {
       uni.makePhoneCall({
         phoneNumber: "10086"
-      });
+      })
     }
   }
 };

@@ -35,7 +35,7 @@
               <text class="reduce" @click="changeCount(index, -1)">-</text>
               <input
                 type="number"
-                @input="handlerCount($event,index)"
+                @blur="handlerCount($event,index)"
                 v-model="item.goods_count"
                 class="number"
               />
@@ -72,42 +72,42 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       carts: [],
       address: null
-    };
+    }
   },
-  onShow() {
-    this.getCarts();
+  onShow () {
+    this.getCarts()
   },
   computed: {
-    addr() {
+    addr () {
       return (
         this.address &&
         this.address.provinceName +
-          this.address.cityName +
-          this.address.countyName +
-          this.address.detailInfo
-      );
+        this.address.cityName +
+        this.address.countyName +
+        this.address.detailInfo
+      )
     },
     // 是否全部选中
-    isAll() {
+    isAll () {
       return (
         this.checkedPrd.length === this.carts.length && this.carts.length !== 0
-      );
+      )
     },
     // 当前选中的商品
-    checkedPrd() {
-      return this.carts.filter(item => item.goods_checked);
+    checkedPrd () {
+      return this.carts.filter(item => item.goods_checked)
     },
     // 总金额
-    amount() {
-      let total = 0;
+    amount () {
+      let total = 0
       this.checkedPrd.forEach(item => {
-        total += item.goods_price * item.goods_count;
-      });
-      return total;
+        total += item.goods_price * item.goods_count
+      })
+      return total
     }
   },
   // onLoad() {
@@ -115,19 +115,19 @@ export default {
   // },
   methods: {
     // 创建订单
-    async createOrder() {
+    async createOrder () {
       // 有货地址和选中至少一件商品
       if (!this.address || !this.checkedPrd.length) {
         return uni.showToast({
           title: "请填写收货地址和添加商品！",
           icon: "none"
-        });
+        })
       }
       // 是否登录
       if (!uni.getStorageSync("token")) {
         return uni.navigateTo({
           url: "/pages/auth/index"
-        });
+        })
       }
 
       // 调用接口：创建订单
@@ -141,75 +141,75 @@ export default {
           order_price: this.amount,
           consignee_addr: this.addr,
           goods: this.checkedPrd.map(item => {
-            item.goods_number = item.goods_count;
-            return item;
+            item.goods_number = item.goods_count
+            return item
           })
         }
-      });
+      })
       if (msg.status === 200) {
         // 清空购物车
         uni.removeStorage({
           key: "carts"
-        });
+        })
         // 跳转订单页面
-        uni.navigateTo({ url: "/pages/order/index" });
+        uni.navigateTo({ url: "/pages/order/index" })
       } else {
         uni.showToast({
           icon: "none",
           title: msg.msg
-        });
+        })
       }
     },
-    getAddress() {
+    getAddress () {
       uni.chooseAddress({
         success: res => {
           // console.log(res);
-          this.address = res;
+          this.address = res
         }
-      });
+      })
     },
-    updateStorage() {
-      uni.setStorageSync("carts", this.carts);
+    updateStorage () {
+      uni.setStorageSync("carts", this.carts)
     },
-    handlerCount(e, i) {
-      console.log(e.detail.value);
-      let val = parseInt(e.detail.value);
-      console.log("h", val);
+    handlerCount (e, i) {
+      console.log(e.detail.value)
+      let val = parseInt(e.detail.value)
+      console.log("h", val)
       if (!val || isNaN(val) || val < 1) {
-        this.carts[i].goods_count = 1;
+        this.carts[i].goods_count = 1
       } else if (val > 10) {
-        this.carts[i].goods_count = 10;
+        this.carts[i].goods_count = 10
       } else {
-        this.carts[i].goods_count = val;
+        this.carts[i].goods_count = val
       }
       // console.log(this.carts[i].goods_count, val);
     },
-    selAll() {
+    selAll () {
       if (this.isAll) {
-        this.carts.forEach(item => (item.goods_checked = false));
+        this.carts.forEach(item => (item.goods_checked = false))
       } else {
-        this.carts.forEach(item => (item.goods_checked = true));
+        this.carts.forEach(item => (item.goods_checked = true))
       }
-      this.updateStorage();
+      this.updateStorage()
     },
-    selPrd(index) {
-      this.carts[index].goods_checked = !this.carts[index].goods_checked;
-      this.updateStorage();
+    selPrd (index) {
+      this.carts[index].goods_checked = !this.carts[index].goods_checked
+      this.updateStorage()
     },
-    changeCount(index, step) {
+    changeCount (index, step) {
       // 处理边界
-      let count = this.carts[index].goods_count;
+      let count = this.carts[index].goods_count
       if (step === 1 && count >= 3) {
-        return;
+        return
       } else if (step === -1 && count === 1) {
-        return;
+        return
       }
-      this.carts[index].goods_count += step;
+      this.carts[index].goods_count += step
       // console.log(this.carts[index].goods_count);
-      this.updateStorage();
+      this.updateStorage()
     },
-    getCarts() {
-      this.carts = uni.getStorageSync("carts") || [];
+    getCarts () {
+      this.carts = uni.getStorageSync("carts") || []
     }
   }
 };
