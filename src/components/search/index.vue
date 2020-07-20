@@ -80,19 +80,22 @@ export default {
       this.keyWord = ""
       this.result = []
     },
-    // 获取搜索建议商品
-    async searchPrd () {
-      const { msg, data } = await this.request({
-        url: "/api/public/v1/goods/qsearch",
-        data: {
-          query: this.keyWord
-          // cid: this.activeId
+    // 获取搜索建议商品=》函数防抖处理
+    searchPrd () {
+      this.timer && clearTimeout(this.timer)
+      this.timer = setTimeout(async () => {
+        const { msg, data } = await this.request({
+          url: "/api/public/v1/goods/qsearch",
+          data: {
+            query: this.keyWord
+            // cid: this.activeId
+          }
+        })
+        console.log(data)
+        if (msg.status === 200) {
+          this.result = data
         }
-      })
-      console.log(data)
-      if (msg.status === 200) {
-        this.result = data
-      }
+      }, 600)
     }
   }
 };

@@ -38,6 +38,7 @@
     "@dcloudio/uni-stat": "^2.0.0-26820200330001",
     "core-js": "^3.6.4",
     "flyio": "^0.6.2",
+    "node-sass": "^4.14.1",
     "regenerator-runtime": "^0.12.1",
     "vue": "^2.6.11",
     "vuex": "^3.0.1"
@@ -59,7 +60,6 @@
     "cross-env": "^7.0.2",
     "mini-types": "*",
     "miniprogram-api-typings": "^2.8.0-2",
-    "node-sass": "^4.13.1",
     "postcss-comment": "^2.0.0",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
