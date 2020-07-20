@@ -4,8 +4,8 @@
  */
 // 基础地址备用：https://api-ugo-dev.itheima.net
 // const BASE_URL = 'https://ugo.botue.com'
-const BASE_URL = 'https://www.uinav.com'
-// const BASE_URL = 'https://api-ugo-dev.itheima.net'
+// const BASE_URL = 'https://www.uinav.com'
+const BASE_URL = 'https://api-ugo-dev.itheima.net'
 export default async function request ({ url, method, data, header }) {
   uni.showLoading({
     title: '加载中...',
