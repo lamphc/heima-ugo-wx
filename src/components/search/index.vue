@@ -84,6 +84,7 @@ export default {
     searchPrd () {
       this.timer && clearTimeout(this.timer)
       this.timer = setTimeout(async () => {
+        if (!this.keyWord) return
         const { msg, data } = await this.request({
           url: "/api/public/v1/goods/qsearch",
           data: {
