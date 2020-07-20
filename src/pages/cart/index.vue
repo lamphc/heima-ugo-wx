@@ -147,12 +147,22 @@ export default {
         }
       })
       if (msg.status === 200) {
-        // 清空购物车
-        uni.removeStorage({
-          key: "carts"
+        // 订单成功创建
+        // 1. 清空选中商品
+        uni.removeStorageSync('carts')
+        // 获取为选中的商品
+        let unSelPrd = this.carts.filter((item) => !item.goods_checked)
+        if (unSelPrd.length) {
+          // 未选中的商品存储到本地
+          uni.setStorage({
+            key: 'carts',
+            data: unSelPrd
+          })
+        }
+        // 2. 跳转到订单页面
+        uni.navigateTo({
+          url: '/packone/order/index'
         })
-        // 跳转订单页面
-        uni.navigateTo({ url: "/packone/order/index" })
       } else {
         uni.showToast({
           icon: "none",
