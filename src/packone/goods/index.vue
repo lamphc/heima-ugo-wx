@@ -1,5 +1,6 @@
 <template>
   <view class="wrapper">
+    <!-- <image src="../static/images/item_2.png" mode="" /> -->
     <!-- 商品图片 -->
     <swiper
       class="pics"
@@ -7,62 +8,79 @@
       indicator-color="rgba(255, 255, 255, 0.6)"
       indicator-active-color="#fff"
     >
-      <swiper-item :key="item.goods_id" v-for="item in goods.pics">
+      <swiper-item
+        :key="item.goods_id"
+        v-for="item in goods.pics"
+      >
         <image :src="item.pics_big" />
       </swiper-item>
     </swiper>
     <!-- 基本信息 -->
     <view class="meta">
-      <view class="price">￥{{goods.goods_price}}</view>
-      <view class="name">{{goods.goods_name}}</view>
+      <view class="price">￥{{ goods.goods_price }}</view>
+      <view class="name">{{ goods.goods_name }}</view>
       <view class="shipment">快递: 免运费</view>
       <text class="collect icon-star">收藏</text>
     </view>
     <!-- 商品详情 -->
     <view class="detail">
       <!-- <view v-html="goods.goods_introduce"></view> -->
-      <rich-text :nodes="goods.goods_introduce"></rich-text>
+      <!-- <rich-text :nodes="goods.goods_introduce"></rich-text> -->
+      <Rparse :content="goods.goods_introduce" />
     </view>
     <!-- 操作 -->
     <view class="action">
-      <button open-type="contact" class="icon-handset">联系客服</button>
+      <button
+        open-type="contact"
+        class="icon-handset"
+      >联系客服</button>
       <!-- 购物车数量 -->
-      <text class="cart-count" v-if="carts.length">{{carts.length}}</text>
-      <text class="cart icon-cart" @click="goCart">购物车</text>
-      <text @click="addCart" class="add">加入购物车</text>
-      <text class="buy" @click="createOrder">立即购买</text>
+      <text
+        class="cart-count"
+        v-if="carts.length"
+      >{{ carts.length }}</text>
+      <text
+        class="cart icon-cart"
+        @click="goCart"
+      >购物车</text>
+      <text
+        @click="addCart"
+        class="add"
+      >加入购物车</text>
+      <text
+        class="buy"
+        @click="createOrder"
+      >立即购买</text>
     </view>
   </view>
 </template>
 
 <script>
+import Rparse from '@/components/parse/parse'
 export default {
   data() {
     return {
       goods: null,
       carts: uni.getStorageSync("carts") || []
-    };
+    }
+  },
+  components: {
+    Rparse,
   },
   onLoad(params) {
-    this.getGoods(params.id);
+    this.getGoods(params.id)
   },
   methods: {
     addCart() {
       // 判断是否添加过
-      let isAdd = this.carts.some(item => {
-        if (item.goods_id === this.goods.goods_id) {
-          // 有，只加数量
-          item.goods_count++;
-          return true;
-        }
-      });
+      let isAdd = this.carts.some(item => item.goods_id === this.goods.goods_id)
       if (!isAdd) {
         const {
           goods_id,
           goods_name,
           goods_price,
           goods_small_logo
-        } = this.goods;
+        } = this.goods
         // 没有， 加入新的
         this.carts.push({
           goods_id,
@@ -70,31 +88,37 @@ export default {
           goods_price,
           goods_small_logo,
           goods_count: 1,
-               goods_checked: true
+          goods_checked: true
+        })
+        // console.log(this.carts);
+        // 存储本地
+        uni.setStorageSync("carts", this.carts)
+      } else {
+        uni.showToast({
+          title: `已经添加过${this.goods.goods_name}了，亲~`,
+          icon: 'none',
+          duration: 2000
         });
       }
-      // console.log(this.carts);
-      // 存储本地
-      uni.setStorageSync("carts", this.carts);
     },
     goCart() {
       uni.switchTab({
         url: "/pages/cart/index"
-      });
+      })
     },
     createOrder() {
       uni.navigateTo({
         url: "/pages/order/index"
-      });
+      })
     },
     async getGoods(goods_id) {
       const { msg, data } = await this.request({
         url: "/api/public/v1/goods/detail",
         data: { goods_id }
-      });
-      console.log(msg, data);
+      })
+      console.log(msg, data)
       if (msg.status === 200) {
-        this.goods = data;
+        this.goods = data
       }
     }
   }

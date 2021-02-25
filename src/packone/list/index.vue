@@ -1,70 +1,90 @@
 <template>
   <view>
     <!-- 筛选 -->
+    <!-- <image style="height: 260rpx" src="../static/images/item_2.png" mode="" /> -->
     <view class="filter">
       <text class="active">综合</text>
       <text>销量</text>
       <text>价格</text>
     </view>
     <!-- 商品列表 -->
-    <scroll-view @scrolltolower="getMore" class="goods" scroll-y>
-      <view class="item" :key="item.cat_id" v-for="item in list" @click="goDetail(item.goods_id)">
+    <scroll-view
+      @scrolltolower="getMore"
+      class="goods"
+      scroll-y
+    >
+      <view
+        class="item"
+        :key="item.cat_id"
+        v-for="item in list"
+        @click="goDetail(item.goods_id)"
+      >
         <!-- 商品图片 -->
-        <image class="pic" :src="item.goods_small_logo" />
+        <image
+          class="pic"
+          :src="item.goods_small_logo"
+        />
         <!-- 商品信息 -->
         <view class="meta">
-          <view class="name">{{item.goods_name}}</view>
+          <view class="name">{{ item.goods_name }}</view>
           <view class="price">
             <text>￥</text>
-            {{item.goods_price}}
+            {{ item.goods_price }}
             <text>.00</text>
           </view>
         </view>
       </view>
-      <text class="nomore" v-if="nomore">没有更多了...</text>
+      <text
+        class="nomore"
+        v-if="nomore"
+      >没有更多了...</text>
     </scroll-view>
   </view>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      list: [],
-      nomore: false
+      list: []
     }
   },
-  onLoad (params) {
+  computed: {
+    nomore() {
+      return this.total === this.list.length
+    }
+  },
+  onLoad(params) {
     this.query = params
     this.query.total = 0
     this.query.pagenum = 1
     this.query.pagesize = 5
     this.getList(this.query)
   },
-  onReachBottom () {
+  onReachBottom() {
     console.log("到底了...")
   },
   methods: {
-    goDetail (id) {
+    goDetail(id) {
       uni.navigateTo({
-        url: "/packone/list/index?id=" + id
+        url: "/packone/goods/index?id=" + id
       })
     },
-    getMore () {
+    getMore() {
       if (this.nomore) return
-      if (this.total === this.list.length) return (this.nomore = true)
       this.query.pagenum++
       console.log(this.query.pagenum)
       this.getList(this.query)
     },
-    async getList (data) {
+    async getList(data) {
       const { msg, data: _d } = await this.request({
         url: "/api/public/v1/goods/search",
         data
       })
       !this.total && (this.total = _d.total)
       if (msg.status === 200) {
-        this.list = this.list.concat(_d.goods)
+        this.list.push(..._d.goods)
+        console.log(this.list)
       }
     }
   }

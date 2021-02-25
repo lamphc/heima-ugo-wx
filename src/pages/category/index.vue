@@ -9,28 +9,32 @@
         <scroll-view scroll-y>
           <text
             @click="switchCate(i)"
-            :class="{active:i === active}"
+            :class="{ active: i === active }"
             :key="item.cat_id"
-            v-for="(item,i) in cates"
-          >{{item.cat_name}}</text>
+            v-for="(item, i) in cates"
+            >{{ item.cat_name }}</text
+          >
         </scroll-view>
       </view>
       <!-- 子级分类 -->
       <view class="sub">
         <scroll-view scroll-y>
           <!-- 封面图 -->
-          <image src="http://static.botue.com/ugo/uploads/category.png" class="thumb" />
+          <image
+            src="http://static.botue.com/ugo/uploads/category.png"
+            class="thumb"
+          />
           <view class="children" :key="item.cat_id" v-for="item in sub">
-            <view class="title">{{item.cat_name}}</view>
+            <view class="title">{{ item.cat_name }}</view>
             <!-- 品牌 -->
             <view class="brands">
               <navigator
-                :url="'/packone/list/index?query='+it.cat_name"
+                :url="'/packone/list/index?query=' + it.cat_name"
                 :key="it.cat_id"
                 v-for="it in item.children"
               >
                 <image :src="it.cat_icon" />
-                <text>{{it.cat_name}}</text>
+                <text>{{ it.cat_name }}</text>
               </navigator>
             </view>
           </view>
@@ -44,7 +48,7 @@
 import search from "@/components/search"
 
 export default {
-  data () {
+  data() {
     return {
       cates: [],
       active: 0,
@@ -52,17 +56,17 @@ export default {
     }
   },
   computed: {
-    sub () {
+    sub() {
       return this.cates.length && this.cates[this.active].children
     }
   },
   methods: {
-    switchCate (index) {
+    switchCate(index) {
       this.active = index
       this.activeId = this.cates[index].cat_id
       console.log(this.activeId)
     },
-    async getCate () {
+    async getCate() {
       const { msg, data } = await this.request({
         url: "/api/public/v1/categories"
       })
@@ -74,7 +78,7 @@ export default {
       }
     }
   },
-  onLoad () {
+  onLoad() {
     this.getCate()
   },
   components: {

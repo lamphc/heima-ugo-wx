@@ -1,5 +1,8 @@
 <template>
-  <view class="search" :class="{focused:isSearch}">
+  <view
+    class="search"
+    :class="{focused:isSearch}"
+  >
     <view class="sinput">
       <input
         @confirm="goResult"
@@ -11,16 +14,33 @@
       />
       <button @click="cancel">取消</button>
     </view>
-    <view class="scontent" v-show="isSearch">
+    <view
+      class="scontent"
+      v-show="isSearch"
+    >
       <div class="title">
         搜索历史
-        <span @click="clearHistory" class="clear"></span>
+        <span
+          @click="clearHistory"
+          class="clear"
+        ></span>
       </div>
-      <div class="history" v-if="result.length===0">
-        <navigator :key="i" v-for="(item,i) in history" url="/packone/list/index">{{item}}</navigator>
+      <div
+        class="history"
+        v-if="result.length===0"
+      >
+        <navigator
+          :key="i"
+          v-for="(item,i) in history"
+          url="/packone/list/index"
+        >{{item}}</navigator>
       </div>
       <!-- 结果 -->
-      <scroll-view scroll-y class="result" v-else>
+      <scroll-view
+        scroll-y
+        class="result"
+        v-else
+      >
         <navigator
           :key="item.cat_id"
           v-for="item in result"
@@ -33,7 +53,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       isSearch: false,
       keyWord: "",
@@ -48,11 +68,11 @@ export default {
     }
   },
   methods: {
-    clearHistory () {
+    clearHistory() {
       this.history = []
       uni.clearStorage()
     },
-    goResult () {
+    goResult() {
       // 处理搜索历史
       this.history.push(this.keyWord)
       // 去重
@@ -63,16 +83,16 @@ export default {
       })
       // 跳转结果页面
       uni.navigateTo({
-        url: "/packone/list/index"
+        url: "/packone/list/index?query=" + this.keyWord
       })
     },
-    search () {
+    search() {
       this.isSearch = true
       const pageHeight = uni.getSystemInfoSync().windowHeight + "px"
       uni.hideTabBar()
       this.$emit("search", pageHeight)
     },
-    cancel () {
+    cancel() {
       this.isSearch = false
       uni.showTabBar()
       this.$emit("search", "auto")
@@ -81,7 +101,7 @@ export default {
       this.result = []
     },
     // 获取搜索建议商品=》函数防抖处理
-    searchPrd () {
+    searchPrd() {
       this.timer && clearTimeout(this.timer)
       this.timer = setTimeout(async () => {
         if (!this.keyWord) return

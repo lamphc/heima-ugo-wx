@@ -1,8 +1,23 @@
 <template>
   <view class="mapBox">
-    <map :longitude="longitude" :latitude="latitude" scale="14"></map>
-    <button type="primary" @tap="openPos">打开位置</button>
-    <button type="primary" @tap="selPos">选择位置</button>
+    <map
+      :longitude="longitude"
+      :latitude="latitude"
+      :markers="markers"
+      :scale="scale"
+    ></map>
+    <button
+      type="primary"
+      @tap="openPos"
+    >打开位置</button>
+    <button
+      type="primary"
+      @tap="selPos"
+    >选择位置</button>
+    <navigator
+      url="/packmap/html/index"
+      hover-class="className"
+    >h5</navigator>
 
     <!-- <web-view src="https://itcast.cn" /> -->
   </view>
@@ -10,33 +25,55 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       longitude: "",
-      latitude: ""
+      latitude: "",
+      markers: [],
+      scale: 14
     }
   },
-  onLoad () {
+  onLoad() {
     this.getPos()
   },
   methods: {
-    async getPos () {
+    async getPos() {
       let [err, data] = await uni.getLocation({
-        type: "wgs84"
+        type: "gcj02"
       })
       if (!err) {
         this.longitude = data.longitude
         this.latitude = data.latitude
+        // 地图打点
+        this.markers.push({
+          id: 0,
+          latitude: this.latitude,
+          longitude: this.longitude
+        })
       }
     },
-    openPos () {
+    openPos() {
+      // 116.616716,40.078094
       uni.openLocation({
-        longitude: this.longitude,
-        latitude: this.latitude
+        longitude: 116.616716,
+        latitude: 40.078094
       })
     },
-    selPos () {
-      uni.chooseLocation()
+    selPos() {
+      uni.chooseLocation({
+        success: (res) => {
+          console.log(res)
+          this.latitude = res.latitude
+          this.longitude = res.longitude
+          this.scale = 12
+          // 地图打点
+          this.markers.push({
+            id: 0,
+            latitude: this.latitude,
+            longitude: this.longitude
+          })
+        }
+      })
     }
   }
 };

@@ -6,11 +6,16 @@
 // const BASE_URL = 'https://ugo.botue.com'
 // const BASE_URL = 'https://www.uinav.com'
 const BASE_URL = 'https://api-ugo-dev.itheima.net'
-export default async function request ({ url, method, data, header }) {
+export default async function request({ url, method, data, header = {} }) {
   uni.showLoading({
     title: '加载中...',
     mask: true
   })
+  // 处理token
+  let token = uni.getStorageSync('token')
+  if (token) {
+    header.Authorization = token
+  }
   let [error, res] = await uni.request({
     url: BASE_URL + url,
     header,
@@ -28,7 +33,7 @@ export default async function request ({ url, method, data, header }) {
 }
 // vue 插件形式
 const MyRequest = {
-  install (Vue, opts) {
+  install(Vue, opts) {
     Vue.prototype.request = request
   }
 }

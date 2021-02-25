@@ -61,6 +61,12 @@
       "pages": [
         {
           "path": "map/index"
+        },
+        {
+          "path": "html/index",
+          "style": {
+            "navigationBarTitleText": "H5"
+          }
         }
       ]
     }

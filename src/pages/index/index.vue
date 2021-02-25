@@ -1,5 +1,5 @@
 <template>
-  <view class="index" :style="{overflow:'hidden',height:pageHeight}">
+  <view class="index" :style="{ overflow: 'hidden1', height: pageHeight }">
     <!-- 搜索 -->
     <search @search="disScroll" />
     <!-- 轮播图 -->
@@ -23,9 +23,13 @@
     <view class="navs">
       <navigator
         :open-type="item.open_type || 'navigate'"
-        :url="index===0? '/pages/category/index':'/packone/list/index?query=' + item.name"
+        :url="
+          index === 0
+            ? '/pages/category/index'
+            : '/packone/list/index?query=' + item.name
+        "
         :key="index"
-        v-for="(item,index) in navs"
+        v-for="(item, index) in navs"
       >
         <image :src="item.image_src" />
       </navigator>
@@ -41,7 +45,7 @@
         <!-- pics -->
         <view class="fitem">
           <navigator
-            :url="'/packone/list/index?query=' +prd.name"
+            :url="'/packone/list/index?query=' + prd.name"
             :key="prd.name"
             v-for="prd in item.product_list"
           >
@@ -64,7 +68,7 @@
 import search from "@/components/search"
 // import request from "@/utils/request";
 export default {
-  data () {
+  data() {
     return {
       pageHeight: "auto",
       scrollTop: 0,
@@ -74,7 +78,7 @@ export default {
     }
   },
   computed: {
-    isShow () {
+    isShow() {
       return this.scrollTop > this.wh
     }
   },
@@ -82,19 +86,19 @@ export default {
   components: {
     search
   },
-  onLoad () {
+  onLoad() {
     this.wh = uni.getSystemInfoSync().windowHeight / 2
     this.getSwiper()
     this.getNavs()
     this.getFloors()
   },
-  onReachBottom () {
+  onReachBottom() {
     console.log("bt...")
   },
-  onPageScroll (e) {
+  onPageScroll(e) {
     this.scrollTop = e.scrollTop
   },
-  onPullDownRefresh () {
+  onPullDownRefresh() {
     Promise.all([this.getSwiper(), this.getNavs(), this.getFloors()]).then(
       () => {
         // 执行完停止loading
@@ -103,22 +107,22 @@ export default {
     )
   },
   methods: {
-    goMap () {
+    goMap() {
       uni.navigateTo({
         url: "/packmap/map/index"
       })
     },
-    goTop () {
+    goTop() {
       uni.pageScrollTo({
         scrollTop: 0,
         duration: 300
       })
     },
     // 搜索时禁止页面滚动
-    disScroll (e) {
+    disScroll(e) {
       this.pageHeight = e
     },
-    async getSwiper () {
+    async getSwiper() {
       const res = await this.request({
         url: "/api/public/v1/home/swiperdata"
       })
@@ -126,7 +130,7 @@ export default {
         this.swiper = res.data
       }
     },
-    async getNavs () {
+    async getNavs() {
       const res = await this.request({
         url: "/api/public/v1/home/catitems"
       })
@@ -134,7 +138,7 @@ export default {
         this.navs = res.data
       }
     },
-    async getFloors () {
+    async getFloors() {
       const res = await this.request({
         url: "/api/public/v1/home/floordata"
       })

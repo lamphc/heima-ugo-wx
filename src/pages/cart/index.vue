@@ -5,41 +5,58 @@
       <block v-if="address">
         <view class="dt">收货人:</view>
         <view class="dd meta">
-          <text class="name">{{address.userName}}</text>
-          <text class="phone">{{address.telNumber}}</text>
+          <text class="name">{{ address.userName }}</text>
+          <text class="phone">{{ address.telNumber }}</text>
         </view>
         <view class="dt">收货地址:</view>
-        <view class="dd">{{addr}}</view>
+        <view class="dd">{{ addr }}</view>
       </block>
       <!-- 获取用户地址 -->
-      <button v-else @click="getAddress">获取收获地址</button>
+      <button
+        v-else
+        @click="getAddress"
+      >获取收获地址</button>
     </view>
     <!-- 购物车 -->
     <view class="carts">
       <view class="item">
         <!-- 店铺名称 -->
         <view class="shopname">优购生活馆</view>
-        <view class="goods" :key="item.goods_id" v-for="(item,index) in carts">
+        <view
+          class="goods"
+          :key="item.goods_id"
+          v-for="(item, index) in carts"
+        >
           <!-- 商品图片 -->
-          <image class="pic" :src="item.goods_small_logo" />
+          <image
+            class="pic"
+            :src="item.goods_small_logo"
+          />
           <!-- 商品信息 -->
           <view class="meta">
-            <view class="name">{{item.goods_name}}</view>
+            <view class="name">{{ item.goods_name }}</view>
             <view class="price">
               <text>￥</text>
-              {{item.goods_price}}
+              {{ item.goods_price }}
               <text>.00</text>
             </view>
             <!-- 加减 -->
             <view class="amount">
-              <text class="reduce" @click="changeCount(index, -1)">-</text>
+              <text
+                class="reduce"
+                @click="changeCount(index, -1)"
+              >-</text>
               <input
                 type="number"
-                @blur="handlerCount($event,index)"
+                disabled
+                @blur="handlerCount($event, index)"
                 v-model="item.goods_count"
                 class="number"
               />
-              <text class="plus" @click="changeCount(index, 1)">+</text>
+              <text
+                class="plus"
+                @click="changeCount(index, 1)"
+              >+</text>
             </view>
           </view>
           <!-- 选框 -->
@@ -48,7 +65,7 @@
               @click="selPrd(index)"
               type="success"
               size="20"
-              :color="item.goods_checked?'#ea4451':'#ccc'"
+              :color="item.goods_checked ? '#ea4451' : '#ccc'"
             ></icon>
           </view>
         </view>
@@ -56,33 +73,43 @@
     </view>
     <!-- 其它 -->
     <view class="extra">
-      <label class="checkall" @click="selAll">
-        <icon type="success" :color="isAll?'#ea4451':'#ccc'" size="20"></icon>全选
+      <label
+        class="checkall"
+        @click="selAll"
+      >
+        <icon
+          type="success"
+          :color="isAll ? '#ea4451' : '#ccc'"
+          size="20"
+        ></icon>全选
       </label>
       <view class="total">
         合计:
         <text>￥</text>
-        <label>{{amount}}</label>
+        <label>{{ amount }}</label>
         <text>.00</text>
       </view>
-      <view @click="createOrder" class="pay">结算({{checkedPrd.length}})</view>
+      <view
+        @click="createOrder"
+        class="pay"
+      >结算({{ checkedPrd.length }})</view>
     </view>
   </view>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       carts: [],
       address: null
     }
   },
-  onShow () {
+  onShow() {
     this.getCarts()
   },
   computed: {
-    addr () {
+    addr() {
       return (
         this.address &&
         this.address.provinceName +
@@ -92,17 +119,17 @@ export default {
       )
     },
     // 是否全部选中
-    isAll () {
+    isAll() {
       return (
         this.checkedPrd.length === this.carts.length && this.carts.length !== 0
       )
     },
     // 当前选中的商品
-    checkedPrd () {
+    checkedPrd() {
       return this.carts.filter(item => item.goods_checked)
     },
     // 总金额
-    amount () {
+    amount() {
       let total = 0
       this.checkedPrd.forEach(item => {
         total += item.goods_price * item.goods_count
@@ -115,7 +142,7 @@ export default {
   // },
   methods: {
     // 创建订单
-    async createOrder () {
+    async createOrder() {
       // 有货地址和选中至少一件商品
       if (!this.address || !this.checkedPrd.length) {
         return uni.showToast({
@@ -134,9 +161,9 @@ export default {
       let { data, msg } = await this.request({
         url: "/api/public/v1/my/orders/create",
         method: "post",
-        header: {
-          Authorization: uni.getStorageSync("token")
-        },
+        // header: {
+        //   Authorization: uni.getStorageSync("token")
+        // },
         data: {
           order_price: this.amount,
           consignee_addr: this.addr,
@@ -148,17 +175,13 @@ export default {
       })
       if (msg.status === 200) {
         // 订单成功创建
-        // 1. 清空选中商品
-        uni.removeStorageSync('carts')
-        // 获取为选中的商品
+        // 获取未选中的商品
         let unSelPrd = this.carts.filter((item) => !item.goods_checked)
-        if (unSelPrd.length) {
-          // 未选中的商品存储到本地
-          uni.setStorage({
-            key: 'carts',
-            data: unSelPrd
-          })
-        }
+        // 未选中的商品存储到本地
+        uni.setStorage({
+          key: 'carts',
+          data: unSelPrd
+        })
         // 2. 跳转到订单页面
         uni.navigateTo({
           url: '/packone/order/index'
@@ -170,7 +193,7 @@ export default {
         })
       }
     },
-    getAddress () {
+    getAddress() {
       uni.chooseAddress({
         success: res => {
           // console.log(res);
@@ -178,10 +201,10 @@ export default {
         }
       })
     },
-    updateStorage () {
+    updateStorage() {
       uni.setStorageSync("carts", this.carts)
     },
-    handlerCount (e, i) {
+    handlerCount(e, i) {
       console.log(e.detail.value)
       let val = parseInt(e.detail.value)
       console.log("h", val)
@@ -194,7 +217,7 @@ export default {
       }
       // console.log(this.carts[i].goods_count, val);
     },
-    selAll () {
+    selAll() {
       if (this.isAll) {
         this.carts.forEach(item => (item.goods_checked = false))
       } else {
@@ -202,11 +225,11 @@ export default {
       }
       this.updateStorage()
     },
-    selPrd (index) {
+    selPrd(index) {
       this.carts[index].goods_checked = !this.carts[index].goods_checked
       this.updateStorage()
     },
-    changeCount (index, step) {
+    changeCount(index, step) {
       // 处理边界
       let count = this.carts[index].goods_count
       if (step === 1 && count >= 3) {
@@ -218,7 +241,7 @@ export default {
       // console.log(this.carts[index].goods_count);
       this.updateStorage()
     },
-    getCarts () {
+    getCarts() {
       this.carts = uni.getStorageSync("carts") || []
     }
   }
